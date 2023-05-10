@@ -75,11 +75,15 @@ class Mod_Usuario():
         while True:
             if nuevotipo == "Administrador" or "Usuario":
                 return nuevotipo
+        
+    def modificar_nickyclave(self, *nickyclave):
+        x.clave = nickyclave[1]
+        x.nick = nickyclave[0]
 
-usuario_actual = Usuario("1","marcelo","Administrador","123123")
+usuario1 = Usuario("1","marcelo","Administrador","123123")
 usuario2 = Usuario("2","miguel","Usuario","123123")
 
-lista_usuarios = [usuario_actual, usuario2]
+lista_usuarios = [usuario1, usuario2]
 
 while True:
     print("*************************************************************************")
@@ -108,8 +112,8 @@ while True:
             elif opcion == 2:
                 for x in lista_usuarios:
                     if x.id == id_actual:
-                        print("Seleccione 1)Modificar id 2)Modificar Nick 3)Modificar clave 4)Modificar Privilegios")
-                        opc_disponible = "1234"
+                        print("Seleccione 1)Modificar id 2)Modificar Nick 3)Modificar clave 4)Modificar Privilegios 5)Modificar Nick y Clave")
+                        opc_disponible = "12345"
                         opcion = int(validacion())
                         if opcion == 1:
                             nuevo_id = Mod_Usuario.modificar_id("")
@@ -123,3 +127,10 @@ while True:
                         elif opcion == 4:
                             nuevo_tipo = Mod_Usuario.modificar_tipo("")
                             x.tipo = nuevo_tipo
+                        elif opcion == 5:
+                            mod_user = Mod_Usuario(x.id,x.nick,x.tipo,x.clave)
+                            nuevo_nick = input("Ingrese nuevo Nick: ")
+                            nuevo_clave = input("Ingrese nueva Clave: ")
+                            mod_user.modificar_nickyclave(nuevo_nick,nuevo_clave)
+    else:
+        print("ALERTA: Usuario Invalido")
