@@ -1,4 +1,3 @@
-import json
 """
 DESARROLLO - Continuación del trabajo.
 Como parte de este ejercicio se necesita crear clases utilizando sintaxis de Python, para comprender
@@ -15,58 +14,112 @@ aplicar los contenidos de ‘sobrecarga de métodos’.
 También se solicita que existan condiciones para realizar las validaciones correspondientes.
 """
 
-data = {}
-data["productos"] = []
+def validacion():
+    """
+    Funcion para validar que las opciones digitadas sean correctas
+    """
+    global opc_disponible
+    opcion_ingresada = input()
+    while True:
+        if opcion_ingresada in opc_disponible:
+            return opcion_ingresada 
+        else:
+            print("Opcion Ingresada no valida")
+            opcion_ingresada = input()
 
-class Productos:
-    global data
-    def __init__(self, descuento, nombre, precio, precio_venta, stock, id=False):
+class Usuario():
+    def __init__(self, id, nick, tipo, clave):
         self.id = id
-        self.nombre = nombre
-        self.precio = precio
-        self.precio_venta = precio_venta
-        self.stock = stock
-        self.descuento = descuento
+        self.nick = nick
+        self.tipo = tipo
+        self.clave = clave
+
+    # Métodos de la clase Usuarios
+
+    def mostrar_nick(self):
+        print(f"El Nick del Usuario es: {self.nick}")
+
+    def mostrar_tipo(self):
+        print(f"El Usuario tiene privilegios: {self.tipo}")
+
+    def mostrar_id(self):
+        print(f"La id de usuario es: {self.id}")
     
-    def agregar(self):
-        #ID automatico
-        nuevo_id = len(data["productos"])+1
-        nuevo_producto = {"descuento": self.descuento, "nombre": self.nombre, "precio": self.precio, "precio_venta": self.precio_venta, "stock": self.stock, "id": nuevo_id }
-        data["productos"].append(nuevo_producto)
+    def mostrar_clave(self):
+        print(f"La clave de usuario es: {self.clave}")
+
+class Mod_Usuario():
+    def __init__(self, id, nick, tipo, clave):
+        self.id = id
+        self.nick = nick
+        self.tipo = tipo
+        self.clave = clave
+
+    # Métodos de la clase Usuarios
+
+    def modificar_nick(self):
+        nuevonick = input("Indique nuevo Nick: ")
+        return nuevonick
+
+    def modificar_id(self):
+        nuevoid = input("Indique nuevo ID(Solo numeros): ")
+        if nuevoid.isdigit():
+            return nuevoid
+
+    def modificar_clave(self):
+        nuevoclave = input("Indique nueva clave: ")
+        return nuevoclave
     
-    def mostrar(self):
-        print(data["productos"])
+    def modificar_tipo(self):
+        nuevotipo = input("Indique nuevo tipo (Usuario o Administrador): ")
+        while True:
+            if nuevotipo == "Administrador" or "Usuario":
+                return nuevotipo
 
-    def eliminar(self):
-        pass
-    #Modificar producto (Precio,nombre)
-    def modificar(self):
-        pass
+usuario_actual = Usuario("1","marcelo","Administrador","123123")
+usuario2 = Usuario("2","miguel","Usuario","123123")
 
-    def modificar_stock(self):
-        pass
-
-    def modificar_descuentos(self):
-        pass
-
-class Basedatos:
-
-    def abrir():
-        with open("data.json", "r") as archivo:
-            data = json.load(archivo)
-            return data
-
-    def grabar(self):
-        with open("data.json", 'w') as file:
-            json.dump(data, file)
-
-data = Basedatos.abrir()
-print(data)
-gestiones = Productos(0,"cocacola", 1200, 1500, 10)
+lista_usuarios = [usuario_actual, usuario2]
 
 while True:
-    opcion = int(input("1) Agregar Producto | 2) Mostrar Producto: "))
-    if opcion == 1:
-        gestiones.agregar()
-    elif opcion == 2:
-        print(data)
+    print("*************************************************************************")
+    print("**********BIENVENIDO A PANEL DE GESTION DE USUARIOS**********************")
+    usuario = input("Ingrese su nombre de usuario aquí: ")
+    for x in lista_usuarios:
+        nombre = x.nick
+        if usuario == nombre:
+            usuario_actual = x
+            id_actual = x.id
+            print("      Seleccione 1) Mostrar datos Usuarios 2) Modificar Usuario          ")
+            opc_disponible = "12"
+            opcion = int(validacion())
+            if opcion == 1:
+                print("Seleccione 1)Mostrar id 2)Mostrar Nick 3)Mostrar clave 4)Mostrar Privilegios")
+                opc_disponible = "1234"
+                opcion = int(validacion())
+                if opcion == 1:
+                    usuario_actual.mostrar_id()
+                elif opcion == 2:
+                    usuario_actual.mostrar_nick()
+                elif opcion == 3:
+                    usuario_actual.mostrar_clave()
+                elif opcion == 4:
+                    usuario_actual.mostrar_tipo()
+            elif opcion == 2:
+                for x in lista_usuarios:
+                    if x.id == id_actual:
+                        print("Seleccione 1)Modificar id 2)Modificar Nick 3)Modificar clave 4)Modificar Privilegios")
+                        opc_disponible = "1234"
+                        opcion = int(validacion())
+                        if opcion == 1:
+                            nuevo_id = Mod_Usuario.modificar_id("")
+                            x.id = nuevo_id
+                        elif opcion == 2:
+                            nuevo_nick = Mod_Usuario.modificar_nick("")
+                            x.nick = nuevo_nick
+                        elif opcion == 3:
+                            nuevo_clave = Mod_Usuario.modificar_clave("")
+                            x.clave = nuevo_clave
+                        elif opcion == 4:
+                            nuevo_tipo = Mod_Usuario.modificar_tipo("")
+                            x.tipo = nuevo_tipo
