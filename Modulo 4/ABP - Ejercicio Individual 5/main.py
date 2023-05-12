@@ -109,20 +109,24 @@ class Administrador(Vendedor,Archivo):
         print("1)Menu Usuarios(Ver tienda)  2)Menu Vendedores(Adminiatrar ofertas) 3)Menu Administrador(Modificar Usuarios) 4)Mostrar Nick (Sobreescritura) 5)Salir: ")
     def menu_admin(self):
         print("**** Seleccione las siguientes Opciones para administrar: ****")
-        print("1)Nuevo usuario  2)Cambiar Clave Usuario 3)Eliminar Usuario: 4)Grabar archivo")
+        print("1)Nuevo usuario  2)Cambiar Clave Usuario 3)Eliminar Usuario: 4)Actualizar base datos en archivo")
         opcion = int(validacion("12345"))
         if opcion == 1:
-            usuario_actual.menu2()
+            print("***************** Ingreso de Nuevos Usuarios ******************")
+            id = usuarios[-1].id + 1 if usuarios else 1
+            print(id)
+            nick = input("Indique Nick: ")
+            tipo = input("Tipo de Usuario (Administrador,Normal,Vendedor): ")
+            clave = input("Ingrese clave: ")
+            telefono = input("Telefono de contacto: ")
+            edad = input("Edad (Solo Numeros): ")
+            usuarios.append(Usuario(int(id), nick, tipo, clave, telefono, int(edad)))
         elif opcion == 2:
-            usuario_actual.menu2()
-            usuario_actual.menu3()
+            print("Opcion No implementada")
         elif opcion == 3:
-            usuario_actual.menu_admin()
+            print("Opcion No implementada")
         elif opcion == 4:
-            nuevadb = input("Ingrese nombre archivo para db (Por defecto usuarios.csv): ")
-            if nuevadb=="":
-                nuevadb = "usuarios.csv"
-            grabar_nuevo = Archivo(nuevadb)
+            grabar_nuevo = Archivo("usuarios.csv")
             grabar_nuevo.guardar_usuarios(usuarios)
 
     def mostrar_nick(self):
@@ -133,13 +137,7 @@ class Administrador(Vendedor,Archivo):
 
 usuarios = Archivo('usuarios.csv')
 usuarios = usuarios.cargar_usuarios()
-"""
-usuario1 = Administrador(1, "Marcelo", "Administrador", "123123", "939444052", 38)
-usuario2 = Normal(2, "Pedro", "Normal", "123123", "939444051", 39)
-usuario3 = Vendedor(3, "Pablo", "Vendedor", "123123", "939444050", 30)
 
-usuarios = [usuario1, usuario2, usuario3]
-"""
 while True:
     usuario = input("Ingrese su nombre de usuario aquí: ")
     for x in usuarios:
