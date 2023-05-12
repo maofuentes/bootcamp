@@ -30,7 +30,7 @@ def validacion(opc_disponible):
 class Archivo():
     def __init__(self, nombre_archivo):
         self.nombre_archivo = nombre_archivo
-        
+    #metodo para carga de usuarios desde archivo csv
     def cargar_usuarios(self):
         with open(self.nombre_archivo, newline='') as archivo_csv:
             lector_csv = csv.reader(archivo_csv)
@@ -39,7 +39,7 @@ class Archivo():
                 id, nick, tipo, clave, telefono, edad = fila
                 usuarios.append(Usuario(int(id), nick, tipo, clave, telefono, int(edad)))
             return usuarios
-    
+    #metodo para grabar usuarios en usuarios
     def guardar_usuarios(self, usuarios):
         with open(self.nombre_archivo, 'w', newline='') as archivo_csv:
             escritor_csv = csv.writer(archivo_csv)
@@ -74,6 +74,16 @@ class Usuario():
     def menu(self):
         print(f"**************    Bienvenido {self.nick}    **************")
         print(f"************** Panel de Usuario {self.tipo} **************")
+    
+    #Metodo para la creacion de usuarios
+    def crear_usuario(usuarios):
+        id = usuarios[-1].id + 1 if usuarios else 1
+        nick = input("Indique Nick: ")
+        tipo = input("Tipo de Usuario (Administrador,Normal,Vendedor): ")
+        clave = input("Ingrese clave: ")
+        telefono = input("Telefono de contacto: ")
+        edad = input("Edad (Solo Numeros): ")
+        usuarios.append(Usuario(int(id), nick, tipo, clave, telefono, int(edad)))
 
 
 #clase normal con menu de la tienda que visualiza un cliente
@@ -113,14 +123,7 @@ class Administrador(Vendedor,Archivo):
         opcion = int(validacion("12345"))
         if opcion == 1:
             print("***************** Ingreso de Nuevos Usuarios ******************")
-            id = usuarios[-1].id + 1 if usuarios else 1
-            print(id)
-            nick = input("Indique Nick: ")
-            tipo = input("Tipo de Usuario (Administrador,Normal,Vendedor): ")
-            clave = input("Ingrese clave: ")
-            telefono = input("Telefono de contacto: ")
-            edad = input("Edad (Solo Numeros): ")
-            usuarios.append(Usuario(int(id), nick, tipo, clave, telefono, int(edad)))
+            Usuario.crear_usuario(usuarios)
         elif opcion == 2:
             print("Opcion No implementada")
         elif opcion == 3:
@@ -129,6 +132,7 @@ class Administrador(Vendedor,Archivo):
             grabar_nuevo = Archivo("usuarios.csv")
             grabar_nuevo.guardar_usuarios(usuarios)
 
+#sobre escribir metodo
     def mostrar_nick(self):
         print(f"El Nick desde la Vista de Administrador es: {self.nick}")
 
