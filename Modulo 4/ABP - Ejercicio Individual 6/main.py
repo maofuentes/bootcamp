@@ -30,6 +30,7 @@ def validacion(opc_disponible):
 class Archivo():
     def __init__(self, nombre_archivo):
         self.nombre_archivo = nombre_archivo
+
     #metodo para carga de usuarios desde archivo csv
     def cargar_usuarios(self):
         with open(self.nombre_archivo, newline='') as archivo_csv:
@@ -139,7 +140,7 @@ class Administrador(Vendedor,Archivo):
 #Clase de gestion de Archivo
 
 
-usuarios = Archivo('usuarios.csv')
+usuarios = Archivo("usuarios.csv")
 usuarios = usuarios.cargar_usuarios()
 
 while True:
