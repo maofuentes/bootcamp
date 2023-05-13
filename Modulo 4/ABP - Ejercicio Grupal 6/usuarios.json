@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1",
+    "nick": "Marcelo",
+    "tipo": "Administrador",
+    "clave": "123123",
+    "telefono": "939444052",
+    "edad": "38"
+  },
+  {
+    "id": "2",
+    "nick": "Pedro",
+    "tipo": "Normal",
+    "clave": "123123",
+    "telefono": "939444051",
+    "edad": "39"
+  },
+  {
+    "id": "3",
+    "nick": "Pablo",
+    "tipo": "Normal",
+    "clave": "123123",
+    "telefono": "939444050",
+    "edad": "30"
+  },
+  {
+    "id": "4",
+    "nick": "Francisca",
+    "tipo": "Administrador",
+    "clave": "123123",
+    "telefono": "939444000",
+    "edad": "38"
+  },
+  {
+    "id": "5",
+    "nick": "Violeta",
+    "tipo": "Normal",
+    "clave": "098098",
+    "telefono": "939444061",
+    "edad": "8"
+  },
+  {
+    "id": "6",
+    "nick": "Anibal",
+    "tipo": "Vendedor",
+    "clave": "123123",
+    "telefono": "93944468",
+    "edad": "6"
+  },
+  {
+    "id": "7",
+    "nick": "Mario",
+    "tipo": "Administrador",
+    "clave": "admin",
+    "telefono": "948374657",
+    "edad": "36"
+  },
+  {
+    "id": "8",
+    "nick": "Estela",
+    "tipo": "Normal",
+    "clave": "contraseña",
+    "telefono": "942346821",
+    "edad": "26"
+  },
+  {
+    "id": "9",
+    "nick": "Diego",
+    "tipo": "Vendedor",
+    "clave": "qwerty",
+    "telefono": "945678231",
+    "edad": "32"
+  },
+  {
+    "id": "10",
+    "nick": "Lorena",
+    "tipo": "Administrador",
+    "clave": "abc123",
+    "telefono": "941238749",
+    "edad": "28"
+  },
+  {
+    "id": "11",
+    "nick": "Julia",
+    "tipo": "Normal",
+    "clave": "456321",
+    "telefono": "934567890",
+    "edad": "22"
+  },
+  {
+    "id": "12",
+    "nick": "Ruben",
+    "tipo": "Vendedor",
+    "clave": "246810",
+    "telefono": "986754321",
+    "edad": "25"
+  },
+  {
+    "id": "13",
+    "nick": "Alicia",
+    "tipo": "Administrador",
+    "clave": "456789",
+    "telefono": "958736240",
+    "edad": "40"
+  },
+  {
+    "id": "14",
+    "nick": "Jorge",
+    "tipo": "Vendedor",
+    "clave": "abc456",
+    "telefono": "922448462",
+    "edad": "31"
+  },
+    {
+    "id": 15,
+    "nick": "Daniela",
+    "tipo": "Normal",
+    "clave": "111222",
+    "telefono": "987654321",
+    "edad": 20
+  },
+  {
+    "id": 16,
+    "nick": "Carolina",
+    "tipo": "Administrador",
+    "clave": "135790",
+    "telefono": "942375612",
+    "edad": 35
+  },
+  {
+    "id": 17,
+    "nick": "Carlos",
+    "tipo": "Vendedor",
+    "clave": "147852",
+    "telefono": "967543219",
+    "edad": 29
+  },
+  {
+    "id": 18,
+    "nick": "Maria",
+    "tipo": "Normal",
+    "clave": "321654",
+    "telefono": "931475869",
+    "edad": 24
+  },
+  {
+    "id": 19,
+    "nick": "Santiago",
+    "tipo": "Administrador",
+    "clave": "987654",
+    "telefono": "947368291",
+    "edad": 42
+  },
+  {
+    "id": 20,
+    "nick": "Valeria",
+    "tipo": "Vendedor",
+    "clave": "753159",
+    "telefono": "944257813",
+    "edad": 27
+  }
+]
