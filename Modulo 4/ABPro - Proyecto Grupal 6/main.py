@@ -21,6 +21,7 @@ opc_disponible = "1"
 opcion = 0
 usuarios = []
 productos = []
+bodega = []
 data = []
 
 #validar opciones para evitar falsos ingresos
@@ -47,14 +48,18 @@ class BaseDatos:
             data = json.load(archivo_json)
             usuarios = [Usuario(u["id"], u["nick"], u["tipo"], u["clave"], u["telefono"], u["edad"]) for u in data["Usuarios"]]
             productos = [Producto(p["sku"], p["nombre"], p["descripcion"], p["categoria"], p["valor_neto"], p["descuento"]) for p in data["Productos"]]
-            return usuarios, productos
+            bodega = [Bodega(b["id"], b["id_sucursal"], b["sku"], b["stock"], b["id_proveedor"]) for b in data["Bodegas"]]
+            return usuarios, productos, bodega
 
-    def guardar_db(self, usuarios, productos):
-        data = {"Usuarios": [], "Productos": []}
+    def guardar_db(self, usuarios, productos, bodegas):
+        data = {"Usuarios": [], "Productos": [], "Bodegas": []}
         for u in usuarios:
             data["Usuarios"].append({"id": u.id, "nick": u.nick, "tipo": u.tipo, "clave": u.clave, "telefono": u.telefono, "edad": u.edad})
         for p in productos:
             data["Productos"].append({"sku": p.sku, "nombre": p.nombre, "descripcion": p.descripcion, "categoria": p.categoria, "valor_neto": p.valor_neto, "descuento": p.descuento})
+        for b in bodegas:
+            data["Bodegas"].append({"id": b.id, "id_sucursal": b.id_sucursal, "sku": b.sku, "stock": b.stock, "id_proveedor": b.id_proveedor})
+        
         with open(self.nombre_archivo, "w") as archivo_json:
             json.dump(data, archivo_json)
 
@@ -107,12 +112,21 @@ class Usuario():
     def crear_usuario(usuarios):
         id = len(usuarios) + 1 if usuarios else 1
         nick = input("Indique Nick: ")
-        tipo = input("Tipo de Usuario (Administrador,Normal,Vendedor): ")
+        print("Tipo de Usuario 1)Administrador 2)Normal 3)Vendedor):")
+        opcion = int(validacion("123"))
+        if opcion == 1:
+            tipo = "Administrador"
+        elif opcion == 2:
+            tipo = "Normal"
+        elif opcion == 3:
+            tipo = "Vendedor"
         clave = input("Ingrese clave: ")
         telefono = input("Telefono de contacto: ")
         edad = input("Edad (Solo Numeros): ")
         nuevo_usuario = Usuario(id, nick, tipo, clave, telefono, edad)
         usuarios.append(nuevo_usuario)
+        grabar_nuevo = BaseDatos("main.json")
+        grabar_nuevo.guardar_db(usuarios,productos)
 
 
 #clase normal con menu de la tienda que visualiza un cliente
@@ -123,9 +137,20 @@ class Normal(Usuario):
 
     def listar_ofertas(self):
         print("Listando todas las ofertas")
+        print("---------------------------------------------------------------------------")
+        print("Codigo Nombre        Descripcion Valor                    Descuentos")
+        for x in productos:
+            if int(x.descuento) > 0:
+                print(f"{x.sku} {x.nombre} {x.descripcion}    {int(x.valor_neto)+(int(x.valor_neto)*0.19)}     Tiene un descuento de:{x.descuento}%")
+        print("---------------------------------------------------------------------------")
 
     def listar_productos(self):
         print("Listando todos los productos")
+        print("---------------------------------------------------------------------------")
+        print("Codigo Nombre        Descripcion Valor")
+        for x in productos:
+            print(x.sku, x.nombre, x.descripcion, int(x.valor_neto)+(int(x.valor_neto)*0.19))
+        print("---------------------------------------------------------------------------")
 
     def admin_cuenta(self):
         print("Seleccion 1)Mostrar NICK 2)Mostrar Clave")
@@ -149,7 +174,7 @@ class Administrador(Vendedor,BaseDatos):
         print("1)Menu Usuarios(Ver tienda)  2)Menu Vendedores(Adminiatrar ofertas) 3)Menu Administrador(Modificar Usuarios) 4)Mostrar Nick (Sobreescritura) 5)Salir: ")
     def menu_admin(self):
         print("**** Seleccione las siguientes Opciones para administrar: ****")
-        print("1)Nuevo usuario  2)Cambiar Clave Usuario 3)Eliminar Usuario: 4)Actualizar base datos en archivo")
+        print("1)Nuevo usuario  2)Cambiar Clave Usuario 3)Eliminar Usuario: 4)Actualizar base datos en archivo 5)Salir")
         opcion = int(validacion("12345"))
         if opcion == 1:
             print("***************** Ingreso de Nuevos Usuarios ******************")
@@ -160,7 +185,46 @@ class Administrador(Vendedor,BaseDatos):
             print("Opcion No implementada")
         elif opcion == 4:
             grabar_nuevo = BaseDatos("main.json")
-            grabar_nuevo.guardar_db(usuarios,productos)
+            grabar_nuevo.guardar_db(usuarios,productos,bodegas)
+        elif opcion == 5:
+            pass
+
+    @staticmethod
+    def opciones_administrador():
+        while True:
+            usuario_actual = Administrador(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
+            usuario_actual.menu1()
+            opcion = int(validacion("12345"))
+            if opcion == 1:
+                usuario_actual.menu2()
+                opcion = int(validacion("1234"))
+                if opcion == 1:
+                    usuario_actual.listar_ofertas()
+                elif opcion == 2:
+                    usuario_actual.listar_productos()
+                elif opcion == 3:
+                    usuario_actual.admin_cuenta()
+                elif opcion == 4:
+                    break
+            elif opcion == 2:
+                usuario_actual.menu2()
+                usuario_actual.menu3()
+                opcion = int(validacion("12345678"))
+                if opcion == 1:
+                    usuario_actual.listar_ofertas()
+                elif opcion == 2:
+                    usuario_actual.listar_productos()
+                elif opcion == 3:
+                    usuario_actual.admin_cuenta()
+                elif opcion == 8:
+                    break
+            elif opcion == 3:
+                usuario_actual.menu_admin()
+            elif opcion == 4:
+                usuario_actual.mostrar_nick()
+            elif opcion == 5:
+                break           
+ 
 
 
 class Sucursal():
@@ -177,8 +241,8 @@ class Sucursal():
         print(f"Informacion de Sucursal {self.nombre}")
 
 class Bodega(Sucursal):
-    def __init__(self, id_bodega, id_sucursal, sku, stock: int, id_proveedor):
-        self.id_bodega = id_bodega
+    def __init__(self, id, id_sucursal, sku, stock: int, id_proveedor):
+        self.id = id
         self.id_sucursal = id_sucursal
         self.sku = sku
         self.stock = stock
@@ -211,10 +275,16 @@ db_completa = BaseDatos("main.json")
 db_cargada = db_completa.cargar_db()
 usuarios = db_cargada[0]
 productos = db_cargada[1]
-for x in productos:
-    print(x.nombre)
+bodegas = db_cargada[2]
+for x in bodegas:
+    print(x.id_proveedor)
 
 while True:
+    print("*********************************************************************************************************")
+    print("*********************************************************************************************************")
+    print("****************         Bienvenidos a la tienda Telecompro         *************************************")
+    print("*********************************************************************************************************")
+    print("*********************************************************************************************************")
     usuario = input("Ingrese su nombre de usuario aquí: ")
     for x in usuarios:
         nombre = x.nick
@@ -222,21 +292,7 @@ while True:
         if usuario == nombre:      
             usuario_actual.menu()
             if x.tipo == "Administrador":
-                while True:
-                    usuario_actual = Administrador(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
-                    usuario_actual.menu1()
-                    opcion = int(validacion("12345"))
-                    if opcion == 1:
-                        usuario_actual.menu2()
-                    elif opcion == 2:
-                        usuario_actual.menu2()
-                        usuario_actual.menu3()
-                    elif opcion == 3:
-                        usuario_actual.menu_admin()
-                    elif opcion == 4:
-                        usuario_actual.mostrar_nick()
-                    elif opcion == 5:
-                        break
+                Administrador.opciones_administrador()
             elif x.tipo == "Normal":
                 while True:
                     usuario_actual = Normal(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)

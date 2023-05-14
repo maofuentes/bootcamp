@@ -1,11 +1,5 @@
 [
-  {
-    "id": "1",
-    "id_sucursal": "1",
-    "sku": "01",
-    "stock": "100",
-    "id_proveedor": "1"
-  },
+  {"id": "1","id_sucursal": "1","sku": "01","stock": "100","id_proveedor": "1"},
   {
     "id": "1",
     "id_sucursal": "1",

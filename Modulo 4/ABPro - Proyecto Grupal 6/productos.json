@@ -1,7 +1,0 @@
-[  
-    {    "sku": "01",    "nombre": "Panchito a lo pobre",    "descripcion": "default",    "categoria": "Panchos",    "valor_neto": "2500",    "descuento": "0" },
-    {    "sku": "02",    "nombre": "Panchito catalan",    "descripcion": "default",    "categoria": "Panchos",    "valor_neto": "3000",    "descuento": "0"  },
-    {    "sku": "03",    "nombre": "Panchito italiano",    "descripcion": "default",    "categoria": "Panchos",    "valor_neto": "2000",    "descuento": "0"  },
-    {    "sku": "04",    "nombre": "Panchito mediterraneo",    "descripcion": "default",    "categoria": "Panchos",    "valor_neto": "5000",    "descuento": "0" },
-    {    "sku": "05",    "nombre": "Panchito americano",    "descripcion": "default",    "categoria": "Panchos",    "valor_neto": "3500",    "descuento": "0"  }
-]
