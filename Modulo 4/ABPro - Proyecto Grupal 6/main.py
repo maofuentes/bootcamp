@@ -19,6 +19,9 @@ import json
 
 opc_disponible = "1"
 opcion = 0
+usuarios = []
+productos = []
+data = []
 
 #validar opciones para evitar falsos ingresos
 def validacion(opc_disponible):
@@ -33,40 +36,42 @@ def validacion(opc_disponible):
             print("Opcion Ingresada no valida")
             opcion_ingresada = input()
 
-class Archivo():
+class BaseDatos:
     def __init__(self, nombre_archivo):
         self.nombre_archivo = nombre_archivo
+        self.tablas = {}
+        self.cargar_db()
 
-    def cargar_usuarios(self):
+    def cargar_db(self):
         with open(self.nombre_archivo) as archivo_json:
-            usuarios = []
             data = json.load(archivo_json)
-            for usuario in data:
-                usuarios.append(Usuario(usuario["id"], usuario["nick"], usuario["tipo"], usuario["clave"], usuario["telefono"], usuario["edad"]))
-            return usuarios
+            usuarios = [Usuario(u["id"], u["nick"], u["tipo"], u["clave"], u["telefono"], u["edad"]) for u in data["Usuarios"]]
+            productos = [Producto(p["sku"], p["nombre"], p["descripcion"], p["categoria"], p["valor_neto"], p["descuento"]) for p in data["Productos"]]
+            return usuarios, productos
 
-    def cargar_productos(self):
-        with open(self.nombre_archivo) as archivo_json:
-            productos = []
-            data = json.load(archivo_json)
-            for producto in data:
-                productos.append(Producto(producto["sku"], producto["nombre"], producto["descripcion"], producto["categoria"], producto["valor_neto"], producto["descuento"]))
-            return productos
-        
-    #metodo para grabar usuarios en usuarios
-    def guardar_usuarios(self, usuarios):
+    def guardar_db(self, usuarios, productos):
+        data = {"Usuarios": [], "Productos": []}
+        for u in usuarios:
+            data["Usuarios"].append({"id": u.id, "nick": u.nick, "tipo": u.tipo, "clave": u.clave, "telefono": u.telefono, "edad": u.edad})
+        for p in productos:
+            data["Productos"].append({"sku": p.sku, "nombre": p.nombre, "descripcion": p.descripcion, "categoria": p.categoria, "valor_neto": p.valor_neto, "descuento": p.descuento})
         with open(self.nombre_archivo, "w") as archivo_json:
-            data = []
-            for usuario in usuarios:
-                data.append({
-                    "id": usuario.id,
-                    "nick": usuario.nick,
-                    "tipo": usuario.tipo,
-                    "clave": usuario.clave,
-                    "telefono": usuario.telefono,
-                    "edad": usuario.edad
-                })
             json.dump(data, archivo_json)
+
+    def agregar_fila(self, nombre_tabla, fila):
+        objeto = {}
+        for nombre_columna, valor in fila.items():
+            objeto[nombre_columna] = valor
+        self.tablas[nombre_tabla].append(objeto)
+
+    def modificar_fila(self, nombre_tabla, indice, fila):
+        objeto = {}
+        for nombre_columna, valor in fila.items():
+            objeto[nombre_columna] = valor
+        self.tablas[nombre_tabla][indice] = objeto
+
+    def eliminar_fila(self, nombre_tabla, indice):
+        del self.tablas[nombre_tabla][indice]
 
 class Usuario():
     global opc_disponible
@@ -98,14 +103,16 @@ class Usuario():
         print(f"************** Panel de Usuario {self.tipo} **************")
     
     #Metodo para la creacion de usuarios
+    @staticmethod
     def crear_usuario(usuarios):
-        id = usuarios[-1].id + 1 if usuarios else 1
+        id = len(usuarios) + 1 if usuarios else 1
         nick = input("Indique Nick: ")
         tipo = input("Tipo de Usuario (Administrador,Normal,Vendedor): ")
         clave = input("Ingrese clave: ")
         telefono = input("Telefono de contacto: ")
         edad = input("Edad (Solo Numeros): ")
-        usuarios.append(Usuario(int(id), nick, tipo, clave, telefono, int(edad)))
+        nuevo_usuario = Usuario(id, nick, tipo, clave, telefono, edad)
+        usuarios.append(nuevo_usuario)
 
 
 #clase normal con menu de la tienda que visualiza un cliente
@@ -136,7 +143,7 @@ class Vendedor(Normal):
         print("8)Salir")
 
 #clase administrador con menu de administrador
-class Administrador(Vendedor,Archivo):
+class Administrador(Vendedor,BaseDatos):
     def menu1(self):
         print("**** Seleccione las siguientes Opciones para administrar: ****")
         print("1)Menu Usuarios(Ver tienda)  2)Menu Vendedores(Adminiatrar ofertas) 3)Menu Administrador(Modificar Usuarios) 4)Mostrar Nick (Sobreescritura) 5)Salir: ")
@@ -152,8 +159,8 @@ class Administrador(Vendedor,Archivo):
         elif opcion == 3:
             print("Opcion No implementada")
         elif opcion == 4:
-            grabar_nuevo = Archivo("usuarios.json")
-            grabar_nuevo.guardar_usuarios(usuarios)
+            grabar_nuevo = BaseDatos("main.json")
+            grabar_nuevo.guardar_db(usuarios,productos)
 
 
 class Sucursal():
@@ -185,11 +192,10 @@ class Bodega(Sucursal):
 
 class Producto(Bodega):
     impuesto = 1.19
-
-    def __init__(self, sku, nombre: str, color, categoria: str, valor_neto: int, descuento):
+    def __init__(self, sku, nombre: str, descripcion, categoria: str, valor_neto: int, descuento):
         self.sku = sku
         self.nombre = nombre
-        self.color = color
+        self.descripcion = descripcion
         self.categoria = categoria
         self.valor_neto = valor_neto
         self.descuento = descuento
@@ -201,11 +207,10 @@ class Producto(Bodega):
 
 
 #iniciando las bases de archivo
-usuarios = Archivo("usuarios.json")
-usuarios = usuarios.cargar_usuarios()
-productos = Archivo("productos.json")
-productos = productos.cargar_productos()
-
+db_completa = BaseDatos("main.json")
+db_cargada = db_completa.cargar_db()
+usuarios = db_cargada[0]
+productos = db_cargada[1]
 for x in productos:
     print(x.nombre)
 
@@ -213,12 +218,12 @@ while True:
     usuario = input("Ingrese su nombre de usuario aquí: ")
     for x in usuarios:
         nombre = x.nick
-        usuario_actual = Usuario(x.id, x.nick, x.tipo, x.clave, x.telefono, x.edad)
+        usuario_actual = Usuario(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
         if usuario == nombre:      
             usuario_actual.menu()
             if x.tipo == "Administrador":
                 while True:
-                    usuario_actual = Administrador(x.id, x.nick, x.tipo, x.clave, x.telefono, x.edad)
+                    usuario_actual = Administrador(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
                     usuario_actual.menu1()
                     opcion = int(validacion("12345"))
                     if opcion == 1:
@@ -234,7 +239,7 @@ while True:
                         break
             elif x.tipo == "Normal":
                 while True:
-                    usuario_actual = Normal(x.id, x.nick, x.tipo, x.clave, x.telefono, x.edad)
+                    usuario_actual = Normal(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
                     usuario_actual.menu2()
                     opcion = int(validacion("1234"))
                     if opcion == 1:
@@ -247,7 +252,7 @@ while True:
                         break
             elif x.tipo == "Vendedor":
                 while True:
-                    usuario_actual = Vendedor(x.id, x.nick, x.tipo, x.clave, x.telefono, x.edad)
+                    usuario_actual = Vendedor(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
                     usuario_actual.menu2()
                     usuario_actual.menu3()
                     opcion = int(validacion("12345678"))
