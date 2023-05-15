@@ -219,10 +219,6 @@ class Ventas(Producto):
             input("Archivo Guardado Presione una tecla para continuar...")
 
 
-        
-
-
-
 class Usuario(Ventas):
     global opc_disponible
     global opcion
