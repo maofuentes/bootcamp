@@ -1,0 +1,6 @@
+Listando todas las Ventas de Vendedor Anibal
+---------------------------------------------------------------------------
+Codigo     Fecha                 ID Producto        Valor Producto       Comision
+2        14/05/2023 22:12:41     02                  42840.0             4284.0
+---------------------------------------------------------------------------
+Total de Comision a Pagar 4284

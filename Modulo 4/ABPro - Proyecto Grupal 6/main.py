@@ -57,7 +57,7 @@ class BaseDatos:
             usuarios = [Usuario(u["id"], u["nick"], u["tipo"], u["clave"], u["telefono"], u["edad"]) for u in data["Usuarios"]]
             productos = [Producto(p["sku"], p["nombre"], p["descripcion"], p["categoria"], p["valor_neto"], p["descuento"]) for p in data["Productos"]]
             bodega = [Bodega(b["id"], b["id_sucursal"], b["sku"], b["stock"], b["id_proveedor"]) for b in data["Bodegas"]]
-            ventas = [Ventas(v["id"], v["sku"], v["id_cliente"], v["fecha"], v["cantidad"], v["valor_producto"]) for v in data["Ventas"]]
+            ventas = [Ventas(v["id"], v["sku"], v["id_cliente"], v["fecha"], v["cantidad"],v["id_vendedor"], v["valor_producto"]) for v in data["Ventas"]]
             return usuarios, productos, bodega, ventas
 
     def guardar_db(self, usuarios, productos, bodegas, ventas):
@@ -69,7 +69,7 @@ class BaseDatos:
         for b in bodegas:
             data["Bodegas"].append({"id": b.id, "id_sucursal": b.id_sucursal, "sku": b.sku, "stock": b.stock, "id_proveedor": b.id_proveedor})
         for v in ventas:
-            data["Ventas"].append({"id": v.id, "sku": v.sku, "id_cliente": v.id_cliente, "fecha": v.fecha, "cantidad": v.cantidad, "valor_producto": v.valor_producto})
+            data["Ventas"].append({"id": v.id, "sku": v.sku, "id_cliente": v.id_cliente, "fecha": v.fecha, "cantidad": v.cantidad, "id_vendedor": v.id_vendedor, "valor_producto": v.valor_producto})
         
         with open(self.nombre_archivo, "w") as archivo_json:
             json.dump(data, archivo_json)
@@ -134,12 +134,13 @@ class Producto(Bodega):
         print("---------------------------------------------------------------------------")
 
 class Ventas(Producto):
-    def __init__(self, id, sku, id_cliente, fecha, cantidad, valor_producto):
+    def __init__(self, id, sku, id_cliente, fecha, cantidad, id_vendedor, valor_producto):
         self.id = id
         self.sku = sku
         self.id_cliente = id_cliente
         self.fecha = fecha
         self.cantidad = cantidad
+        self.id_vendedor = id_vendedor
         self.valor_producto = valor_producto
 
     # Métodos de la clase Ventas
@@ -163,30 +164,66 @@ class Ventas(Producto):
                 print("¿Desea continuar con la compra? Opcion: 1)SI     2)NO: ")
                 opcion = int(validacion("12"))
                 if opcion == 1:
-                    usuario_actual.listar_usuarios()
-                    print("Seleccione el Usuario que desea comprar: ")
+                    usuario_actual.listar_usuarios("Normal")
+                    print("Seleccione Nuestro Cliente: ")
                     rango = range(1,cantidad_usuarios+1)
                     opciones2 = ''.join(str(i) for i in rango)
-                    id_usuario= int(validacion(opciones2))
+                    id_usuario= int(validacion(opciones2))                    
                     for z in usuarios:
-                        if z.id == id_usuario:
+                        if int(z.id) == int(id_usuario):
                             print(f" El Usuario: {z.nick} Telefono: {z.telefono} desea comprar {cantidad} {x.nombre} con un costo total de: {valor_total}")
                             print("¿Desea realizar la venta? Opcion: 1)SI     2)NO: ")
                             opcion = int(validacion("12"))
                             if opcion == 1:
                                 fecha_actual = datetime.datetime.now()
                                 fecha = fecha_actual.strftime("%d/%m/%Y %H:%M:%S")
-                                nueva_venta = Ventas(id_venta, x.sku, z.id, fecha, cantidad, valor_total)
+                                nueva_venta = Ventas(id_venta, x.sku, z.id, fecha, cantidad, usuario_actual.id, valor_total)
                                 ventas.append(nueva_venta)
                                 grabar_nuevo = BaseDatos("main.json")
                                 grabar_nuevo.guardar_db(usuarios,productos,bodegas,ventas)
                                 print(f"Venta realizada por {z.nick} con exito por un monto total de {valor_total}: Su orden de compra es: {id_venta}")
         
-    def mostrar_informacion(self):
-        print(f"Informacion de Venta Productos {self.sku} {self.cantidad}")
+    def mostrar_ventas(self, id_vendedor):
+        limpiar_pantalla()
+        total_comision = 0
+        print("¿Como Deseas obtener esta informacion?   1)En Pantalla 2)En archivo de texto (ventas.txt)")
+        opcion = int(validacion("12"))
+        if opcion == 1:
+            for x in usuarios:
+                if int(x.id) == int(id_vendedor):
+                    vendedor_actual = x.nick
+                    print(f"Listando todas las Ventas de Vendedor {vendedor_actual}")
+                    print("---------------------------------------------------------------------------")
+                    print("Codigo     Fecha                 ID Producto        Valor Producto       Comision")
+                    for z in ventas:
+                        if int(z.id_vendedor) == int(id_vendedor):
+                            print(z.id,"      ", z.fecha,"   ", z.sku,"                ",         z.valor_producto,"           ", z.valor_producto*0.1)
+                            total_comision = total_comision+int(z.valor_producto*0.1)
+                    print("---------------------------------------------------------------------------")
+                    print(f"Total de Comision a Pagar {total_comision}")
+                    opcion = input("Presione cualquier tecla para continuar...")
+        elif 2:
+            with open('ventas.txt', 'w') as f:
+                for x in usuarios:
+                    if int(x.id) == int(id_vendedor):
+                        vendedor_actual = x.nick
+                        print(f"Listando todas las Ventas de Vendedor {vendedor_actual}", file=f)
+                        print("---------------------------------------------------------------------------", file=f)
+                        print("Codigo     Fecha                 ID Producto        Valor Producto       Comision", file=f)
+                        for z in ventas:
+                            if int(z.id_vendedor) == int(id_vendedor):
+                                print(z.id,"      ", z.fecha,"   ", z.sku,"                ",         z.valor_producto,"           ", z.valor_producto*0.1, file=f)
+                                total_comision = total_comision+int(z.valor_producto*0.1)
+                        print("---------------------------------------------------------------------------", file=f)
+                        print(f"Total de Comision a Pagar {total_comision}", file=f)
+            input("Archivo Guardado Presione una tecla para continuar...")
 
 
-class Usuario(Producto):
+        
+
+
+
+class Usuario(Ventas):
     global opc_disponible
     global opcion
     def __init__(self, id, nick, tipo, clave, telefono, edad):
@@ -215,12 +252,13 @@ class Usuario(Producto):
         print(f"**************    Bienvenido {self.nick}    **************")
         print(f"************** Panel de Usuario {self.tipo} **************")
 
-    def listar_usuarios(self):
-        print("Listando todos los productos")
+    def listar_usuarios(self, tipo):
+        print("Listando todos los Usuarios")
         print("---------------------------------------------------------------------------")
         print("Codigo       Nombre                  Telefono")
         for x in usuarios:
-            print(x.id,"           ", x.nick,"                ",         x.telefono)
+            if x.tipo == tipo:
+                print(x.id,"           ", x.nick,"                ",         x.telefono)
         print("---------------------------------------------------------------------------")
     
     #Metodo para la creacion de usuarios
@@ -248,16 +286,25 @@ class Usuario(Producto):
 #clase normal con menu de la tienda que visualiza un cliente
 class Normal(Usuario):
     def menu2(self):
-        limpiar_pantalla()
         while True:
-            print("**** Seleccione las siguientes Opciones para navegar: ****")
+            limpiar_pantalla()
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("*************************                         Seleccione las siguientes Opciones para navegar:                          **************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
+            print("******************************************************************************************************************************************************")
             print("1)Listar Ofertas 2)Listar todos los productos 3)Administrar su cuenta 4)Salir: ")
+            print("")
             usuario_actual = Normal(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
             opcion = int(validacion("1234"))
             if opcion == 1:
                 usuario_actual.listar_ofertas()
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 2:
                 usuario_actual.listar_productos()
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 3:
                 usuario_actual.admin_cuenta()
             elif opcion == 4:
@@ -268,14 +315,24 @@ class Normal(Usuario):
         opcion = int(validacion("12"))
         if opcion == 1:
             usuario_actual.mostrar_nick()
+            opcion = input("Presione cualquier tecla para continuar...")
         elif opcion == 2:
             usuario_actual.mostrar_clave()
+            opcion = input("Presione cualquier tecla para continuar...")
 
 #clase vendedor con opciones de visualizacion de menu vendedor, esta cuenta hereda de Normal para tener visualizacion de tienda como la ve cliente 
 class Vendedor(Normal, Ventas):
+    def __init__(self, id, nick, tipo, clave, telefono, edad):
+        self.id = id
+        self.nick = nick
+        self.tipo = tipo
+        self.clave = clave
+        self.telefono = telefono
+        self.edad = edad
+
     def menu3(self):
+        limpiar_pantalla()
         while True:
-            limpiar_pantalla()
             print("******************************************************************************************************************************************************")
             print("******************************************************************************************************************************************************")
             print("******************************************************************************************************************************************************")
@@ -291,25 +348,14 @@ class Vendedor(Normal, Ventas):
                 usuario_actual.vender_producto()
             elif opcion == 2:
                 usuario_actual.listar_ofertas()
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 3:
                 usuario_actual.listar_productos()
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 4:
                 print("Cancelar Venta")
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 5:
-                break
-
-    
-    @staticmethod
-    def opciones_vendedor():
-        while True:
-            usuario_actual = Vendedor(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
-            usuario_actual.menu3()
-            opcion = int(validacion("12345"))
-            if opcion == 1:
-                usuario_actual.menu2()
-            elif opcion == 2:
-                usuario_actual.menu3()
-            elif opcion == 3:
                 break
 
 #clase administrador con menu de administrador
@@ -328,7 +374,7 @@ class Administrador(Vendedor,BaseDatos):
     
     def menu_admin(self):
         print("**** Seleccione las siguientes Opciones para administrar: ****")
-        print("1)Nuevo usuario  2)Cambiar Clave Usuario 3)Eliminar Usuario: 4)Actualizar base datos en archivo 5)Salir")
+        print("1)Nuevo usuario  2)Cambiar Clave Usuario 3)Eliminar Usuario: 4)Actualizar base datos en archivo 5)Consolidado de Ventas 6)Salir")
         opcion = int(validacion("12345"))
         if opcion == 1:
             print("***************** Ingreso de Nuevos Usuarios ******************")
@@ -341,6 +387,10 @@ class Administrador(Vendedor,BaseDatos):
             grabar_nuevo = BaseDatos("main.json")
             grabar_nuevo.guardar_db(usuarios,productos,bodegas,ventas)
         elif opcion == 5:
+            usuario_actual.listar_usuarios("Vendedor")
+            vendedor_seleccionado = input("Selecciona el Vendedor del cual necesita Status de venta:")
+            usuario_actual.mostrar_ventas(int(vendedor_seleccionado))
+        elif opcion == 6:
             pass
 
     @staticmethod
@@ -357,6 +407,7 @@ class Administrador(Vendedor,BaseDatos):
                 usuario_actual.menu_admin()
             elif opcion == 4:
                 usuario_actual.mostrar_nick()
+                opcion = input("Presione cualquier tecla para continuar...")
             elif opcion == 5:
                 break           
  
@@ -384,11 +435,11 @@ while True:
         nombre = x.nick
         usuario_actual = Usuario(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
         if usuario == nombre:      
-            usuario_actual.menu()
             if x.tipo == "Administrador":
                 Administrador.opciones_administrador()
             elif x.tipo == "Normal":
                 usuario_actual = Normal(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
                 usuario_actual.menu2()
             elif x.tipo == "Vendedor":
-                Vendedor.opciones_vendedor()
+                usuario_actual = Vendedor(x.id,x.nick, x.tipo, x.clave, x.telefono, x.edad)
+                usuario_actual.menu3()
