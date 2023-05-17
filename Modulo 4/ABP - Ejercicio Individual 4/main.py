@@ -51,6 +51,57 @@ class Usuario():
         print(f"**************    Bienvenido {self.nick}    **************")
         print(f"************** Panel de Usuario {self.tipo} **************")
 
+    def validar_usuario(self):
+        usuario = input("Ingrese su nombre de usuario aquí: ")
+        for x in usuarios:
+            nombre = x.nick
+            usuario_actual = Usuario(x.id, x.nick, x.tipo, x.clave)
+            if usuario == nombre:      
+                usuario_actual.menu()
+                if x.tipo == "Administrador":
+                    while True:
+                        usuario_actual = Administrador(x.id, x.nick, x.tipo, x.clave)
+                        usuario_actual.menu1()
+                        opcion = int(validacion("12345"))
+                        if opcion == 1:
+                            usuario_actual.menu2()
+                        elif opcion == 2:
+                            usuario_actual.menu2()
+                            usuario_actual.menu3()
+                        elif opcion == 3:
+                            usuario_actual.menu_admin()
+                        elif opcion == 4:
+                            usuario_actual.mostrar_nick()
+                        elif opcion == 5:
+                            break
+                elif x.tipo == "Normal":
+                    while True:
+                        usuario_actual = Normal(x.id, x.nick, x.tipo, x.clave)
+                        usuario_actual.menu2()
+                        opcion = int(validacion("1234"))
+                        if opcion == 1:
+                            usuario_actual.listar_ofertas()
+                        elif opcion == 2:
+                            usuario_actual.listar_productos()
+                        elif opcion == 3:
+                            usuario_actual.admin_cuenta()
+                        elif opcion == 4:
+                            break
+                elif x.tipo == "Vendedor":
+                    while True:
+                        usuario_actual = Vendedor(x.id, x.nick, x.tipo, x.clave)
+                        usuario_actual.menu2()
+                        usuario_actual.menu3()
+                        opcion = int(validacion("12345678"))
+                        if opcion == 1:
+                            usuario_actual.listar_ofertas()
+                        elif opcion == 2:
+                            usuario_actual.listar_productos()
+                        elif opcion == 3:
+                            usuario_actual.admin_cuenta()
+                        elif opcion == 8:
+                            break
+
 
 #clase normal con menu de la tienda que visualiza un cliente
 class Normal(Usuario):
@@ -97,54 +148,6 @@ usuario3 = Vendedor(3, "Pablo", "Vendedor", "123123")
 usuarios = [usuario1, usuario2, usuario3]
 
 while True:
-    usuario = input("Ingrese su nombre de usuario aquí: ")
-    for x in usuarios:
-        nombre = x.nick
-        usuario_actual = Usuario(x.id, x.nick, x.tipo, x.clave)
-        if usuario == nombre:      
-            usuario_actual.menu()
-            if x.tipo == "Administrador":
-                while True:
-                    usuario_actual = Administrador(x.id, x.nick, x.tipo, x.clave)
-                    usuario_actual.menu1()
-                    opcion = int(validacion("12345"))
-                    if opcion == 1:
-                        usuario_actual.menu2()
-                    elif opcion == 2:
-                        usuario_actual.menu2()
-                        usuario_actual.menu3()
-                    elif opcion == 3:
-                        usuario_actual.menu_admin()
-                    elif opcion == 4:
-                        usuario_actual.mostrar_nick()
-                    elif opcion == 5:
-                        break
-            elif x.tipo == "Normal":
-                while True:
-                    usuario_actual = Normal(x.id, x.nick, x.tipo, x.clave)
-                    usuario_actual.menu2()
-                    opcion = int(validacion("1234"))
-                    if opcion == 1:
-                        usuario_actual.listar_ofertas()
-                    elif opcion == 2:
-                        usuario_actual.listar_productos()
-                    elif opcion == 3:
-                        usuario_actual.admin_cuenta()
-                    elif opcion == 4:
-                        break
-            elif x.tipo == "Vendedor":
-                while True:
-                    usuario_actual = Vendedor(x.id, x.nick, x.tipo, x.clave)
-                    usuario_actual.menu2()
-                    usuario_actual.menu3()
-                    opcion = int(validacion("12345678"))
-                    if opcion == 1:
-                        usuario_actual.listar_ofertas()
-                    elif opcion == 2:
-                        usuario_actual.listar_productos()
-                    elif opcion == 3:
-                        usuario_actual.admin_cuenta()
-                    elif opcion == 8:
-                        break
+    Usuario.validar_usuario(usuarios)
  #           print("      Seleccione 1) Mostrar datos Usuarios 2) Modificar Usuario          ")
  #           opc_disponible = "12"
