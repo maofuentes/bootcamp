@@ -20,7 +20,8 @@ from productos import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("home", views.home, name="home"),
     path("", views.home, name="home"),
+    path("home/", views.home, name="home"),
     path("listar_usuarios/", views.listar_usuarios, name="listar_usuarios"),
+    path("crear_usuarios/", views.crear_usuarios, name="crear_usuarios"),
 ]
