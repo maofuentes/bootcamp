@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User, Group
 
 class CrearUsuario(UserCreationForm):
@@ -15,3 +15,11 @@ class CrearUsuario(UserCreationForm):
 class Formulario_login(forms.Form):
     usuario = forms.CharField(widget=forms.TextInput)
     clave = forms.CharField(widget=forms.PasswordInput)
+
+class Formulario_datos(UserChangeForm):
+    first_name = forms.CharField(max_length=150, required=True)
+    last_name = forms.CharField(max_length=150, required=True)
+    telefono = forms.CharField(max_length=15, required=True)
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'telefono']

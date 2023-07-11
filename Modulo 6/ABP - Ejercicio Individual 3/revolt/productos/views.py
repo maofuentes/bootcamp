@@ -6,7 +6,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .forms import CrearUsuario, Formulario_login
+from .models import Personas
+
+from .forms import CrearUsuario, Formulario_login, Formulario_datos
 
 
 def home(request):
@@ -19,11 +21,12 @@ def is_admin(user):
 @user_passes_test(is_admin, login_url='home')
 def listar_usuarios(request):
     usuarios = User.objects.all()
+    perfil_personas = Personas.objects.all()
     if not is_admin(request.user):
         messages.error(request, "No tienes permiso para acceder a esta página.")
         return redirect('home')
 
-    return render(request, 'listar.html', {'usuarios': usuarios})
+    return render(request, 'listar.html', {'usuarios': usuarios, 'perfil_personas': perfil_personas})
 
 @user_passes_test(is_admin, login_url='home')
 def panel_admin(request):
@@ -79,3 +82,15 @@ def login_usuarios(request):
 def logout_usuarios(request):
     logout(request)
     return redirect("home")
+
+#Ingresar Datos de usuario para contacto
+@login_required
+def datos_usuarios(request):
+    if request.method=="POST":
+        form = Formulario_datos(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = Formulario_datos(instance=request.user)
+    return render(request, 'datos_usuarios.html', {'form': form})

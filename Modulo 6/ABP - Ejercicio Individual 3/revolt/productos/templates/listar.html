@@ -9,12 +9,16 @@
       <th>Nombre Usuario</th>
       <th>Email</th>
       <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Telefono</th>
     </tr>
     {% for usuario in usuarios %}
     <tr>
       <td>{{ usuario.username }}</td>
       <td>{{ usuario.email }}</td>
       <td>{{ usuario.first_name }}</td>
+      <td>{{ usuario.last_name }}</td>
+      <td>{{ perfil_personas.telefono }}</td>
     </tr>
     {% endfor %}
   </table>
