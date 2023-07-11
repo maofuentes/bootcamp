@@ -12,6 +12,7 @@
       <th>Nombre</th>
       <th>Apellido</th>
       <th>Telefono</th>
+      <th>Direccion</th>
     </tr>
     {% for usuario in usuarios %}
     <tr>
@@ -27,6 +28,7 @@
       <td>{{ usuario.first_name }}</td>
       <td>{{ usuario.last_name }}</td>
       <td>{{ usuario.telefono }}</td>
+      <td>{{ usuario.direccion }}</td>
     </tr>
     {% endfor %}
   </table>

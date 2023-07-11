@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import Group
-from productos.models import User
+from django.contrib.auth.models import Group, User
+from .models import User
+
 
 class CrearUsuario(UserCreationForm):
     email = forms.EmailField(label="Correo")
@@ -21,6 +22,7 @@ class Formulario_datos(UserChangeForm):
     first_name = forms.CharField(max_length=150, required=True)
     last_name = forms.CharField(max_length=150, required=True)
     telefono = forms.CharField(max_length=15, required=True)
+    direccion = forms.CharField(max_length=500, required=True)
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'telefono']
+        fields = ['first_name', 'last_name', 'telefono', 'direccion']
