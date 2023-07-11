@@ -2,7 +2,7 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 
@@ -72,3 +72,10 @@ def login_usuarios(request):
     else:
         form = Formulario_login()
         return render(request, "login.html", {'form':form})
+    
+
+#Salir de la cuenta
+
+def logout_usuarios(request):
+    logout(request)
+    return redirect("home")
