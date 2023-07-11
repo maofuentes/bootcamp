@@ -3,10 +3,9 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
-
-from .models import Personas
+from .models import User
 
 from .forms import CrearUsuario, Formulario_login, Formulario_datos
 
@@ -21,12 +20,13 @@ def is_admin(user):
 @user_passes_test(is_admin, login_url='home')
 def listar_usuarios(request):
     usuarios = User.objects.all()
-    perfil_personas = Personas.objects.all()
+    grupos = Group.objects.all()
     if not is_admin(request.user):
         messages.error(request, "No tienes permiso para acceder a esta página.")
         return redirect('home')
 
-    return render(request, 'listar.html', {'usuarios': usuarios, 'perfil_personas': perfil_personas})
+    return render(request, 'listar.html', {'usuarios': usuarios, 'grupos': grupos})
+
 
 @user_passes_test(is_admin, login_url='home')
 def panel_admin(request):

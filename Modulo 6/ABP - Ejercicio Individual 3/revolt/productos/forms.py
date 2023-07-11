@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+from productos.models import User
 
 class CrearUsuario(UserCreationForm):
     email = forms.EmailField(label="Correo")

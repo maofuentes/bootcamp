@@ -6,6 +6,7 @@
 
   <table>
     <tr>
+      <th>Grupo</th>
       <th>Nombre Usuario</th>
       <th>Email</th>
       <th>Nombre</th>
@@ -14,11 +15,18 @@
     </tr>
     {% for usuario in usuarios %}
     <tr>
+      <td>
+        {% for group in usuario.groups.all %}
+          {{ group.name }}
+        {% empty %}
+          Sin grupos
+        {% endfor %}
+      </td>
       <td>{{ usuario.username }}</td>
       <td>{{ usuario.email }}</td>
       <td>{{ usuario.first_name }}</td>
       <td>{{ usuario.last_name }}</td>
-      <td>{{ perfil_personas.telefono }}</td>
+      <td>{{ usuario.telefono }}</td>
     </tr>
     {% endfor %}
   </table>
