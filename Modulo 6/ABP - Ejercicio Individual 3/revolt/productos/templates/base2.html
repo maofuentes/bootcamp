@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Por un Futuro Sostenible</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    body {
+      background-color: #f2f2f2;
+      color: #333333;
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #dddddd;
+    }
+
+    th {
+      background-color: #dddddd;
+    }
+    </style>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        {% for group in user.groups.all %}
+            {% if group.name == "Administradores" %}
+                <a class="navbar-brand" href="/panel_admin">Revolt</a>
+            {% else %}
+                <a class="navbar-brand" href="/home">Revolt</a>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            {% endfor %}
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/crear_usuarios">Crea tu bateria</a>
+                    </li>
+                    {% if not user.first_name %}
+                        <li class="nav-item active bg-danger">
+                            <a class="nav-link" href="/datos_usuarios">Completa tu informacion de Usuario</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout_usuarios">Salir</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    {% else %}
+        <!-- Barra de navegación -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/home">Revolt</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/crear_usuarios">Crear Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login_usuarios">Acceso Usuario</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    {% endif %}
+
+
+
+
+    <!-- Cuerpo de la página -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Pie de página -->
+    <footer class="bg-dark text-light py-3 text-center">
+        <p>&copy; 2023 Revolt.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

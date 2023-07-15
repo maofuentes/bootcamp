@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<body>
-<h1>Ingreso Usuarios</h1>
-<br>
-<form action="{% url 'login_usuarios' %}" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" class="btn btn-primary" value="login" />
-</form>
-</body>
+<div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+  <div class="col-lg-8 align-self-end">
+      <h1 class="text-white font-weight-bold">Acceso para Usuarios</h1>
+      <hr class="divider" />
+  </div>
+  <div class="col-lg-8 align-self-baseline">
+      <p class="text-white-75 mb-5">
+        <form action="{% url 'login_usuarios' %}" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" class="btn btn-primary" value="Ingresar" />
+        </form>
+      </p>
+  </div>
+</div>
 {% endblock %}

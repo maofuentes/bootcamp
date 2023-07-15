@@ -18,6 +18,7 @@ class Formulario_login(forms.Form):
     usuario = forms.CharField(widget=forms.TextInput)
     clave = forms.CharField(widget=forms.PasswordInput)
 
+"""
 class Formulario_datos(UserChangeForm):
     first_name = forms.CharField(max_length=150, required=True)
     last_name = forms.CharField(max_length=150, required=True)
@@ -26,3 +27,14 @@ class Formulario_datos(UserChangeForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'telefono', 'direccion']
+"""
+
+class Formulario_datos(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 
+            'last_name', 
+            'email',
+            ]

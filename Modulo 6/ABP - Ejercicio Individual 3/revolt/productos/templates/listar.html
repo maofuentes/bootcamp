@@ -1,36 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<body>
-  <h1>Usuarios Registrados</h1>
-
-  <table>
-    <tr>
-      <th>Grupo</th>
-      <th>Nombre Usuario</th>
-      <th>Email</th>
-      <th>Nombre</th>
-      <th>Apellido</th>
-      <th>Telefono</th>
-      <th>Direccion</th>
-    </tr>
-    {% for usuario in usuarios %}
-    <tr>
-      <td>
-        {% for group in usuario.groups.all %}
-          {{ group.name }}
-        {% empty %}
-          Sin grupos
-        {% endfor %}
-      </td>
-      <td>{{ usuario.username }}</td>
-      <td>{{ usuario.email }}</td>
-      <td>{{ usuario.first_name }}</td>
-      <td>{{ usuario.last_name }}</td>
-      <td>{{ usuario.telefono }}</td>
-      <td>{{ usuario.direccion }}</td>
-    </tr>
-    {% endfor %}
-  </table>
 </body>
+<div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+  <div class="col-lg-8 align-self-end">
+      <h1 class="text-white font-weight-bold">Usuarios Registrados</h1>
+      <hr class="divider" />
+  </div>
+  <div class="col-lg-8 align-self-baseline">
+      <p class="text-white-75 mb-5">
+        <table>
+          <tr>
+            <th>Grupo</th>
+            <th>Nombre Usuario</th>
+            <th>Email</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Telefono</th>
+            <th>Direccion</th>
+          </tr>
+          {% for usuario in usuarios %}
+          <tr>
+            <td>
+              {% for group in usuario.groups.all %}
+                {{ group.name }}
+              {% empty %}
+                Sin grupos
+              {% endfor %}
+            </td>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.first_name }}</td>
+            <td>{{ usuario.last_name }}</td>
+            <td>{{ usuario.telefono }}</td>
+            <td>{{ usuario.direccion }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </p>
+  </div>
+</div>
 {% endblock %}

@@ -5,7 +5,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import User
+from productos.models import User
+
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView
 
 from .forms import CrearUsuario, Formulario_login, Formulario_datos
 
@@ -85,6 +88,7 @@ def logout_usuarios(request):
     return redirect("home")
 
 #Ingresar Datos de usuario para contacto
+
 @login_required
 def datos_usuarios(request):
     if request.method=="POST":
@@ -95,3 +99,11 @@ def datos_usuarios(request):
     else:
         form = Formulario_datos(instance=request.user)
     return render(request, 'datos_usuarios.html', {'form': form})
+
+"""
+class DatosUsuarios(UpdateView):
+    model = User
+    form_class = Formulario_datos
+    success_url = reverse_lazy('home')
+    template_name = 'datos_usuarios.html'
+"""
